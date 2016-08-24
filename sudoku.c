@@ -26,7 +26,7 @@ int 	checkline(char **mapsudoku, int y, int x, char nb)
 	return (1);
 }
 
-int		checkblock(char **mapsudoku, int y, int x, char c)
+int		checkblock(char **mapsudoku, int y, int x, char nb)
 {
 	int		x2;
 	int		y2;
@@ -40,7 +40,7 @@ int		checkblock(char **mapsudoku, int y, int x, char c)
 		x = x2;
 		while (x < x2 + 3)
 		{
-			if (mapsudoku[y][x] == c)
+			if (mapsudoku[y][x] == nb)
 				return (0);
 			x++;
 		}
@@ -51,40 +51,38 @@ int		checkblock(char **mapsudoku, int y, int x, char c)
 
 int 	numsudokuvalid(char **mapsudoku, int pos)
 {
-	char c;
-	char point;
+	char nb;
 	int i;
 
 	i = 0;
-	c = '1';
-	point = '.';
+	nb = '1';
 	if (pos == 81)
 		return (1);
-	else if (mapsudoku[pos / 9][pos % 9] != point)
+	else if (mapsudoku[pos / 9][pos % 9] != '.')
 		i = numsudokuvalid(mapsudoku , pos + 1);
 	else
 	{
-		while (c <= '9')
+		while (nb <= '9')
 		{
-			if (checkline(mapsudoku, pos / 9, pos % 9, c) == 1 && 
-				checkblock(mapsudoku, pos / 9, pos % 9, c) == 1)
+			if (checkline(mapsudoku, pos / 9, pos % 9, nb) == 1 && 
+				checkblock(mapsudoku, pos / 9, pos % 9, nb) == 1)
 			{
-				mapsudoku[pos / 9][pos % 9] = c;
+				mapsudoku[pos / 9][pos % 9] = nb;
 				i += numsudokuvalid(mapsudoku, pos + 1);
 			}
-			c++;
+			nb++;
 		}
+		mapsudoku[pos / 9][pos % 9] = '.';
 	}
-		mapsudoku[pos / 9][pos % 9] = point;
 	return(i);
 }
 
 void 	sudoku(char **mapsudoku, int pos)
 {
-	char c;
+	char nb;
 	char point;
 
-	c = '1';
+	nb = '1';
 	point = '.';
 	if (pos == 81)
 		putsudoku(mapsudoku);
@@ -92,25 +90,28 @@ void 	sudoku(char **mapsudoku, int pos)
 		sudoku(mapsudoku , pos + 1);
 	else
 	{
-		while (c <= '9')
+		while (nb <= '9')
 		{
-			if (checkline(mapsudoku, pos / 9, pos % 9, c) == 1 && 
-				checkblock(mapsudoku, pos / 9, pos % 9, c) == 1)
+			if (checkline(mapsudoku, pos / 9, pos % 9, nb) == 1 && 
+				checkblock(mapsudoku, pos / 9, pos % 9, nb) == 1)
 			{
-				mapsudoku[pos / 9][pos % 9] = c;
+				mapsudoku[pos / 9][pos % 9] = nb;
 				sudoku(mapsudoku, pos + 1);
 			}
-			c++;
+			nb++;
 		}
-	}
 		mapsudoku[pos / 9][pos % 9] = point;
+	}
 }
 
 int 	main(int argc, char **argv)
 {
-	if (argc == 10 && checkvalidecaracter(argv + 1) == 1 && 
-		numsudokuvalid(argv + 1) == 1)
-		sudoku(argv + 1, 0);
+	int pos;
+
+	pos  = 0;
+	if (argc == 10 && 1 == numsudokuvalid(argv, pos) &&
+		1 == checkvalidecaracter(argv))
+		sudoku(argv + 1, pos);
 	else
 	{
 		write(1, "erreur", 6);
