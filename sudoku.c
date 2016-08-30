@@ -109,8 +109,8 @@ int 	main(int argc, char **argv)
 	int pos;
 
 	pos  = 0;
-	if (argc == 10 && 1 == numsudokuvalid(argv, pos) &&
-		1 == checkvalidecaracter(argv))
+	if (argc == 10 && 1 == numsudokuvalid(argv + 1, pos) &&
+		1 == checkvalidecaracter(argv + 1))
 		sudoku(argv + 1, pos);
 	else
 	{
